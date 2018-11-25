@@ -5,6 +5,7 @@ import prime.Prime;
 import ellipse.theory;
 import java.math.BigInteger;
 import java.util.*;
+
 public class Ellipse {
 	private BigInteger a;
 	private BigInteger b;
@@ -28,9 +29,16 @@ public class Ellipse {
 		this.b = new BigInteger("41058363725152142129326129780047268409114441015993725554835256314039467401291");
 		this.ellipseBuild();
 	}
-	public Ellipse(Prime p ,int a, int b) {
+	public Ellipse(Prime p ,int a, int b) throws IllegalArgumentException{
 		this.a = BigInteger.valueOf(a);
 		this.b = BigInteger.valueOf(b);
+		BigInteger cal = theory.pow(this.a,4).multiply(new BigInteger("4"));
+		cal = cal.add(theory.pow(this.b, 2).multiply(new BigInteger("27")));
+		cal = cal.remainder(p.getValue());
+		if(cal.compareTo(BigInteger.ZERO)==0) {
+			throw new IllegalArgumentException(this.a.toString()+", "+
+					this.b.toString()+" need to fill the form: 4a^3+27b^2 mod p != 0");
+		}
 		this.p = p;
 		this.ellipseBuild();
 	}
@@ -42,7 +50,7 @@ public class Ellipse {
 	public ENode nodeAdd(ENode alice, ENode bob) {
 		BigInteger p = this.p.getValue();
 		BigInteger k;
-		if(alice.getN().compareTo(BigInteger.ONE)==0) {//Èç¹ûÕâÁ©ÆäÖÐÒ»¸öÊÇÁãÔª
+		if(alice.getN().compareTo(BigInteger.ONE)==0) {//if one of them is ZERO
 			return bob;
 		}else if(bob.getN().compareTo(BigInteger.ONE)==0) {
 			return alice;
@@ -52,7 +60,7 @@ public class Ellipse {
 			//k = ((3*alice.getX()*alice.getX()+this.a)%p * fermat(2*alice.getY(),p)).reminder(p);
 			k = theory.pow(alice.getX(),2).multiply(new BigInteger("3")).add(this.a).remainder(p);
 			k = k.multiply(fermat(alice.getY().multiply(new BigInteger("2")),p)).remainder(p);
-		}else if(alice.getX().compareTo(bob.getX())==0&&alice.getY().compareTo(bob.getY())!=0){//Á½¸öÏà·´µãÏà¼ÓµÃµ½ÁãÔª
+		}else if(alice.getX().compareTo(bob.getX())==0&&alice.getY().compareTo(bob.getY())!=0){//ï¿½ï¿½ï¿½ï¿½ï¿½à·´ï¿½ï¿½ï¿½ï¿½ÓµÃµï¿½ï¿½ï¿½Ôª
 			return new ENode(0);
 		}else {
 			//k = (double)(((bob.getY() - alice.getY())%p * fermat(bob.getX() - alice.getX(),p))%p);
@@ -60,7 +68,7 @@ public class Ellipse {
 			k.remainder(p);
 		}
 		k = k.add(p).remainder(p);
-		if(k.compareTo(BigInteger.ZERO)==0) {//Ë«±£ÏÕ
+		if(k.compareTo(BigInteger.ZERO)==0) {//is ZERO
 			return new ENode(0);
 		}
 		//System.out.println("k = "+k);
@@ -75,12 +83,12 @@ public class Ellipse {
 		return result;
 	}
 	/*
-	 * ¼ÆËãÄ³µãaliceµÄ½×
+	 * ï¿½ï¿½ï¿½ï¿½Ä³ï¿½ï¿½aliceï¿½Ä½ï¿½
 	 */
 	public BigInteger nodeInitN(ENode alice) {
 		BigInteger result = new BigInteger("0");
 		if(alice.getN().compareTo(BigInteger.ONE)!=0) {
-			//µü´ú×Ô¼ÓÖ±µ½µÃµ½ÁãÔª
+			//ï¿½ï¿½ï¿½ï¿½ï¿½Ô¼ï¿½Ö±ï¿½ï¿½ï¿½Ãµï¿½ï¿½ï¿½Ôª
 			ENode sum = new ENode(alice.getX(),alice.getY());
 			result.add(BigInteger.ONE);
 			while(true) {
@@ -96,31 +104,31 @@ public class Ellipse {
 	
 	public ENode nodePow(ENode alice, BigInteger times) throws IllegalArgumentException{
 		ENode result = new ENode(0);
-		//ÏÈ¿´¿´Õâ¸öµãµÄ½×ÊÇ²»ÊÇÒÑ¾­±»ÕýÈ·³õÊ¼»¯ÁË
-		if(alice.getN().compareTo(BigInteger.ZERO)==0) {//µÈÓÚ0µÄ»°¾ÍÊÇ»¹Ã»ÓÐ³õÊ¼»¯
+		//ï¿½È¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä½ï¿½ï¿½Ç²ï¿½ï¿½ï¿½ï¿½Ñ¾ï¿½ï¿½ï¿½ï¿½ï¿½È·ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½
+		if(alice.getN().compareTo(BigInteger.ZERO)==0) {//ï¿½ï¿½ï¿½ï¿½0ï¿½Ä»ï¿½ï¿½ï¿½ï¿½Ç»ï¿½Ã»ï¿½Ð³ï¿½Ê¼ï¿½ï¿½
 			nodeInitN(alice);
 		}
-		if(alice.getN().compareTo(BigInteger.ONE)==0) {//µÈÓÚ1¾ÍÊÇÄÃÁãÔª×ö³Ë·¨
+		if(alice.getN().compareTo(BigInteger.ONE)==0) {//ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ôªï¿½ï¿½ï¿½Ë·ï¿½
 			return new ENode(0);
-		}else {//¶¼²»ÊÇ ¿´À´ÊÇÒÑ¾­³õÊ¼»¯¹ýµÄÆÕÍ¨µã
-			//¿´¿´ÏëÒª³ËµÄ´ÎÊýÊÇ²»ÊÇÔÚÕâ¸öµãµÄ½×Ö®ÄÚ
+		}else {//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¾ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ËµÄ´ï¿½ï¿½ï¿½ï¿½Ç²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä½ï¿½Ö®ï¿½ï¿½
 			if(times.compareTo(alice.getN())>0) {
-				throw new IllegalArgumentException("Ö¸Êý "+times.toString()+" ´óÓÚµã"+alice.toString());
-			}else if(times.compareTo(alice.getN())==0){//¸ÕºÃÊÇÕâ¸öµãµÄ½×
+				throw new IllegalArgumentException("Ö¸ï¿½ï¿½ "+times.toString()+" ï¿½ï¿½ï¿½Úµï¿½"+alice.toString());
+			}else if(times.compareTo(alice.getN())==0){//ï¿½Õºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä½ï¿½
 				return new ENode(0);
 			}
 		}
-		//ÏÈ½«´ÎÊý×ª»»³É¶þ½øÖÆ
+		//ï¿½È½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½É¶ï¿½ï¿½ï¿½ï¿½ï¿½
 		char[] btimes = times.toString(2).toCharArray();
 		ENode[] ary = new ENode[btimes.length];
-		ary[btimes.length-1] = alice;//½«×îºóÒ»Î»ÉèÖÃÎªalice±¾Éí
+		ary[btimes.length-1] = alice;//ï¿½ï¿½ï¿½ï¿½ï¿½Ò»Î»ï¿½ï¿½ï¿½ï¿½Îªaliceï¿½ï¿½ï¿½ï¿½
 		Boolean flag = true;
-		//È»ºó¸ù¾Ý¶þ½øÖÆÊýÂëÖ´ÐÐ¼Ó·¨
+		//È»ï¿½ï¿½ï¿½ï¿½Ý¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½Ð¼Ó·ï¿½
 		for(int i = 0;i<btimes.length;i++) {
 			if(btimes[i]=='1') {
-				if(flag==true) {//µÚÒ»´Î·¢ÏÖ1Ê±£¬¼ÆËãËùÓÐÊýÎ»µÄµãÖµ
+				if(flag==true) {//ï¿½ï¿½Ò»ï¿½Î·ï¿½ï¿½ï¿½1Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½Äµï¿½Öµ
 					flag=false;
-					for(int j = btimes.length -2;j>=0;j--) {//´Óµ¹ÊýµÚ¶þÎ»¿ªÊ¼Ö±µ½µÚ0Î»
+					for(int j = btimes.length -2;j>=0;j--) {//ï¿½Óµï¿½ï¿½ï¿½ï¿½Ú¶ï¿½Î»ï¿½ï¿½Ê¼Ö±ï¿½ï¿½ï¿½ï¿½0Î»
 						ary[j] = nodeAdd(ary[j+1],ary[j+1]);
 						System.out.println("ary: "+ary[j].toString());
 					}
@@ -144,33 +152,33 @@ public class Ellipse {
 	
 	public static Boolean isEqual(ENode alice, ENode bob) throws IllegalArgumentException{
 		if(alice.getN().compareTo(BigInteger.ONE)==0) {
-			throw new IllegalArgumentException("µÚÒ»¸ö²ÎÊý"+alice.toString()+"ÊÇÁãÔª£¬²»ºÏ·¨");
+			throw new IllegalArgumentException("ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"+alice.toString()+"ï¿½ï¿½ï¿½ï¿½Ôªï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½");
 		}
 		if(bob.getN().compareTo(BigInteger.ONE)==0) {
-			throw new IllegalArgumentException("µÚ¶þ¸ö²ÎÊý"+bob.toString()+"ÊÇÁãÔª£¬²»ºÏ·¨");
+			throw new IllegalArgumentException("ï¿½Ú¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"+bob.toString()+"ï¿½ï¿½ï¿½ï¿½Ôªï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½");
 		}
 		return (alice.getX().compareTo(bob.getX())==0&&alice.getY().compareTo(bob.getY())==0);
 	}
 	
 	public ENode[] nodeCal(BigInteger x) {
-		System.out.println("¿ªÊ¼¶ÔxµÈÓÚ"+x.toString()+"Çó½â");
+		System.out.println("ï¿½ï¿½Ê¼ï¿½ï¿½xï¿½ï¿½ï¿½ï¿½"+x.toString()+"ï¿½ï¿½ï¿½");
 		BigInteger p = this.p.getValue();
-		x = x.add(p).remainder(p);//Ê×ÏÈ¶Ôx½øÐÐÄ£p
+		x = x.add(p).remainder(p);//ï¿½ï¿½ï¿½È¶ï¿½xï¿½ï¿½ï¿½ï¿½Ä£p
 		BigInteger sum = theory.pow(x, 3).add(x.multiply(a)).add(b);//y^2 = x^3 + ax + b
 		sum = sum.add(p).remainder(p);
 		System.out.println("sum ="+sum.toString());
-		ArrayList<BigInteger> ans = new ArrayList<BigInteger>();//½â¼¯,Í¨³£ÓÐÁ½¸ö½â
+		ArrayList<BigInteger> ans = new ArrayList<BigInteger>();//ï¿½â¼¯,Í¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		/*
 		for(BigInteger i = BigInteger.ZERO;i.compareTo(this.p.getValue())<0;i=i.add(BigInteger.ONE)) {
 			if(theory.pow(i,2).remainder(p).compareTo(sum)==0) {
 				ans.add(i);
-				System.out.println("ÕÒµ½ÁË½â£º"+i.toString());
+				System.out.println("ï¿½Òµï¿½ï¿½Ë½â£º"+i.toString());
 			}
 		}
 		*/
 		
-		if(ans.size()==0) {//Ã»ÓÐÕÒµ½½â
-			System.out.println("¶ÔxµÈÓÚ"+x.toString()+"Çó½âÃ»ÓÐÕÒµ½½â");
+		if(ans.size()==0) {//Ã»ï¿½ï¿½ï¿½Òµï¿½ï¿½ï¿½
+			System.out.println("ï¿½ï¿½xï¿½ï¿½ï¿½ï¿½"+x.toString()+"ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½Òµï¿½ï¿½ï¿½");
 			return null;
 		}
 		ENode result[] = new ENode[ans.size()];
@@ -182,7 +190,7 @@ public class Ellipse {
 		return result;
 	}
 	/*
-	 * ÐèÒªÓÅ»¯£¡
+	 * ï¿½ï¿½Òªï¿½Å»ï¿½ï¿½ï¿½
 	 */
 	public ArrayList<ENode> getAllENodes(){
 		ArrayList<ENode> result = new ArrayList<ENode>();
