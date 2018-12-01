@@ -42,9 +42,11 @@ public class Ellipse {
 		this.p = p;
 		this.ellipseBuild();
 	}
-	/*
+	
+	/**
+	 * 两点的加法，也就是P+Q=R的过程
 	 * @param two ENode
-	 * @returns their sum in ENode form
+	 * @return their sum in ENode form
 	 * 
 	 */
 	public ENode nodeAdd(ENode alice, ENode bob) {
@@ -82,13 +84,16 @@ public class Ellipse {
 		ENode result = new ENode(newX, newY);
 		return result;
 	}
-	/*
-	 * ����ĳ��alice�Ľ�
+	
+	/**
+	 * 对Alice进行初始化，如果Alice是零元则返回阶1 
+	 * @param ENode alice 想要初始化的点
+	 * @return BigInteger Alice的阶 n
 	 */
 	public BigInteger nodeInitN(ENode alice) {
 		BigInteger result = new BigInteger("0");
 		if(alice.getN().compareTo(BigInteger.ONE)!=0) {
-			//�����Լ�ֱ���õ���Ԫ
+			//这不是零元
 			ENode sum = new ENode(alice.getX(),alice.getY());
 			result.add(BigInteger.ONE);
 			while(true) {
@@ -96,6 +101,8 @@ public class Ellipse {
 				sum = nodeAdd(sum, alice);
 				if(sum.getN()==BigInteger.ONE) break;
 			}
+		}else {
+			return BigInteger.ONE;
 		}
 		alice.setN(result);
 		System.out.println("re = "+result.toString());
@@ -105,10 +112,10 @@ public class Ellipse {
 	public ENode nodePow(ENode alice, BigInteger times) throws IllegalArgumentException{
 		ENode result = new ENode(0);
 		//�ȿ��������Ľ��ǲ����Ѿ�����ȷ��ʼ����
-		if(alice.getN().compareTo(BigInteger.ZERO)==0) {//����0�Ļ����ǻ�û�г�ʼ��
+		if(alice.getN().compareTo(BigInteger.ZERO)==0) {//这点还没初始化
 			nodeInitN(alice);
 		}
-		if(alice.getN().compareTo(BigInteger.ONE)==0) {//����1��������Ԫ���˷�
+		if(alice.getN().compareTo(BigInteger.ONE)==0) {//这点是零元
 			return new ENode(0);
 		}else {//������ �������Ѿ���ʼ��������ͨ��
 			//������Ҫ�˵Ĵ����ǲ����������Ľ�֮��
@@ -138,9 +145,22 @@ public class Ellipse {
 		}
 				return result;
 	}
-	/*
+	
+	/**
+	 * 已知某点的x坐标求y的过程，加密的第二步
+	 * @param x
+	 * @return y
+	 */
+	public BigInteger[] calY(BigInteger x) {
+		BigInteger result[] = new BigInteger[2];
+		
+		return result;
+	}
+	/**
 	 * Fermat's little theorem
 	 * so cool
+	 * @param 欲求的x，其模值MOD
+	 * @return x在mod MOD下的乘法逆元
 	 */
 	private static BigInteger fermat(BigInteger x,BigInteger MOD){
 	    BigInteger ans=BigInteger.ONE;
@@ -189,6 +209,7 @@ public class Ellipse {
 		}
 		return result;
 	}
+	
 	/*
 	 * ��Ҫ�Ż���
 	 */
@@ -205,15 +226,13 @@ public class Ellipse {
 		}
 		return result;
 	}
+	
+	
 	public static final void main(String args[]) {
 		Ellipse a = new Ellipse(new Prime(23),-3,1);
 		Ellipse b = new Ellipse();
 		ENode alice = new ENode(3,10);
 		BigInteger i = new BigInteger("0");
-		while(true) {
-			System.out.println(i.toString());
-			i = i.add(BigInteger.ONE);
-		}
 		/*ArrayList<ENode> r =a.getAllENodes();
 		System.out.println(r);
 	

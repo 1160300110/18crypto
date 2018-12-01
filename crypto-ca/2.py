@@ -56,11 +56,11 @@ def Secp256k1GetYByX(x):#y^2=x^3+7 (mod p)根据x求y
 
 def mySqrt(x):
     a = (x * x * x + x + 1) % 23
-    ret  = GetMoSqrt(a, 23)
+    ret = GetMoSqrt(a, 23)
     return ret
 if __name__ == "__main__":
     if True:
-        nn = mySqrt(8)
+        nn = mySqrt(3)
         print(nn)
         x=0x79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798#私钥为1,对应的公钥x
         ret = Secp256k1GetYByX(x)#secp256k1，根据x求y

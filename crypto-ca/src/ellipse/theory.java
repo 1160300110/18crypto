@@ -13,20 +13,25 @@ public class theory {
 		return result;
 	}
 	
+	
+	/**
+	 * 
+	 * @param BigInteger value
+	 * @return BigInteger sqrt(value)çš„è¿‘ä¼¼å€¼
+	 */
 	public static BigInteger sqrt(BigInteger value) {
 		String x = value.toString();
-        int mlen = x.length();    //±»¿ª·½ÊýµÄ³¤¶È
-        int len;    //¿ª·½ºóµÄ³¤¶È
-        BigInteger beSqrtNum = new BigInteger(x);//±»¿ª·½Êý
-        BigInteger sqrtOfNum;    //´æ´¢¿ª·½ºóµÄÊý
-        BigInteger sqrtOfNumMul;    //¿ª·½ÊýµÄÆ½·½
-        String sString;//´æ´¢sArray×ª»¯ºóµÄ×Ö·û´®
+        int mlen = x.length();
+        int len;
+        BigInteger beSqrtNum = new BigInteger(x);
+        BigInteger sqrtOfNum;
+        BigInteger sqrtOfNumMul;
+        String sString;
         if(mlen%2 == 0)    len = mlen/2;
         else    len = mlen/2+1;
         char[] sArray = new char[len];
-        Arrays.fill(sArray, '0');//¿ª·½Êý³õÊ¼»¯Îª0
+        Arrays.fill(sArray, '0');
         for(int pos=0; pos<len; pos++){
-         //´Ó×î¸ß¿ªÊ¼±éÀúÊý×é£¬Ã¿Ò»Î»¶¼×ª»¯Îª¿ª·½ÊýÆ½·½ºó¸ÕºÃ²»´óÓÚ±»¿ª·½ÊýµÄ³Ì¶È
             for(char num='1'; num<='9'; num++){
                 sArray[pos] = num;
                 sString = String.valueOf(sArray);
@@ -40,6 +45,55 @@ public class theory {
         }
         return new BigInteger(String.valueOf(sArray));
     }
+	
+	public BigInteger quick_algorithm(BigInteger a, BigInteger b, BigInteger c) throws IllegalArgumentException{
+		BigInteger result = BigInteger.ONE;
+		a = a.remainder(c);
+		if(b.compareTo(BigInteger.ZERO)<0) {
+			throw new IllegalArgumentException();
+		}
+		while(b.compareTo(BigInteger.ZERO)!=0) {
+			if(b.remainder(new BigInteger("2")).compareTo(BigInteger.ONE)==0) {//å¦‚æžœbæ˜¯å¥‡æ•°
+				result = result.multiply(a).mod(c);
+			}
+			b = b.shiftRight(1);
+			a = a.multiply(a).mod(c);
+		}
+		return result;
+	}
+	
+	public Boolean isHaveMoSqrt(BigInteger x, BigInteger P) {
+		BigInteger r = P.subtract(BigInteger.ONE).divideAndRemainder(new BigInteger("2"))[0];
+		BigInteger ret = quick_algorithm(x, r,P);
+		return ret.compareTo(BigInteger.ONE)==0?true:false;
+	}
+	
+	public BigInteger[] GetMoSqrt(BigInteger x, BigInteger P) {
+		BigInteger two = new BigInteger("2");
+		BigInteger ret[] = new BigInteger[2];
+		if(isHaveMoSqrt(x, P)==true) {
+			BigInteger t = BigInteger.ZERO;
+			BigInteger s = P.subtract(BigInteger.ONE);
+			while(s.mod(new BigInteger("2")).compareTo(BigInteger.ZERO)==0){
+				s = s.divideAndRemainder(two)[0];
+				t = t.add(BigInteger.ONE);
+			}
+			if(t.equals(BigInteger.ONE)) {
+				ret[0] = this.quick_algorithm(x, s.add(BigInteger.ONE).divideAndRemainder(two)[0], P);
+				ret[1] = P.subtract(ret[0]);
+				return ret;
+			}else if(t.compareTo(two)>=0) {
+				BigInteger x_=this.quick_algorithm(x, P.subtract(two), P);
+				BigInteger n = BigInteger.ONE;
+				while(this.isHaveMoSqrt(n, P)==true){
+					n = n.add(BigInteger.ONE);
+				}
+				BigInteger b = this.quick_algorithm(n, s, P);
+				System.out.println(b.toString());
+				
+			}
+		}
+	}
 	/*
 	public static final void main(String args[]) {
 		BigInteger two = new BigInteger("2");
