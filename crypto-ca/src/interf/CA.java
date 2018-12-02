@@ -9,23 +9,23 @@ public interface CA {
 	
 	
 	/**
-	  *  Õâ¸öº¯ÊýÓÃÀ´×¢²áÔÚCAÖÐµÄÈÏÖ¤Éí·Ý¡£
-	 * @param ×¢²áÐÅÏ¢
-	 * @return ×¢²á³É¹¦£»»òÒÑ¾­×¢²á¹ý£»»òÐÅÏ¢µÄ¿ÉÐÅÐÔ±»¾Ü¾ø
+	  *  åœ¨CAä¸­æ³¨å†Œ
+	 * @param ×¢ï¿½ï¿½ï¿½ï¿½Ï¢
+	 * @return ×¢ï¿½ï¿½É¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¾ï¿½×¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½Ô±ï¿½ï¿½Ü¾ï¿½
 	 */
 	public void signUp();
 	
 	
 	/**
-	  * Õâ¸öº¯ÊýÓÃÀ´½«Éí·ÝµÇÈëCAÖÐ¡£
-	  * @param µÇÂ¼ÑéÖ¤ÄÚÈÝ
-	  * @return Boolean µÇÂ¼³É¹¦»òÊ§°Ü
+	  * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ýµï¿½ï¿½ï¿½CAï¿½Ð¡ï¿½
+	  * @param ï¿½ï¿½Â¼ï¿½ï¿½Ö¤ï¿½ï¿½ï¿½ï¿½
+	  * @return Boolean ï¿½ï¿½Â¼ï¿½É¹ï¿½ï¿½ï¿½Ê§ï¿½ï¿½
 	 */
 	public Boolean signIn();
 	
 	
 	/**
-	 *  µ±ÒÑ¾­µÇÈëCAÖ®ºó£¬µ÷ÓÃÕâ¸öº¯ÊýÀ´»ñÈ¡×î½üµÄ¹«Ë½Ô¿¶Ô¡£
+	 *  ï¿½ï¿½ï¿½Ñ¾ï¿½ï¿½ï¿½ï¿½ï¿½CAÖ®ï¿½ó£¬µï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½Ä¹ï¿½Ë½Ô¿ï¿½Ô¡ï¿½
 	 */
 	public void getKeys();
 	

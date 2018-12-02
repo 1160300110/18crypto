@@ -1,6 +1,6 @@
 package enc;
 
-import ellipse.ENode;
+import ellipse.*;
 public class crypto implements Encypt<ENode> {
 
 	@Override

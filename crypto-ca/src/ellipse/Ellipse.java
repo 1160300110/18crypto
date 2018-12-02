@@ -29,7 +29,7 @@ public class Ellipse {
 		this.b = new BigInteger("41058363725152142129326129780047268409114441015993725554835256314039467401291");
 		this.ellipseBuild();
 	}
-	public Ellipse(Prime p ,int a, int b) throws IllegalArgumentException{
+	public Ellipse(int a, int b, Prime p) throws IllegalArgumentException{
 		this.a = BigInteger.valueOf(a);
 		this.b = BigInteger.valueOf(b);
 		BigInteger cal = theory.pow(this.a,4).multiply(new BigInteger("4"));
@@ -100,6 +100,7 @@ public class Ellipse {
 				result = result.add(BigInteger.ONE);
 				sum = nodeAdd(sum, alice);
 				if(sum.getN()==BigInteger.ONE) break;
+				//System.out.println(sum.getX().toString()+", "+sum.getY().toString());
 			}
 		}else {
 			return BigInteger.ONE;
@@ -149,13 +150,13 @@ public class Ellipse {
 	/**
 	 * 已知某点的x坐标求y的过程，加密的第二步
 	 * @param x
-	 * @return y
+	 * @return y[]
 	 */
 	public BigInteger[] calY(BigInteger x) {
-		BigInteger result[] = new BigInteger[2];
-		
-		return result;
+		BigInteger y = x.pow(3).add(x.multiply(this.a)).add(this.b);
+		return theory.GetMoSqrt(y, this.p.getValue());
 	}
+	
 	/**
 	 * Fermat's little theorem
 	 * so cool
@@ -164,7 +165,10 @@ public class Ellipse {
 	 */
 	private static BigInteger fermat(BigInteger x,BigInteger MOD){
 	    BigInteger ans=BigInteger.ONE;
-	    for(int i=1;i<=Integer.valueOf(MOD.subtract(new BigInteger("2")).toString());i++) {
+	    BigInteger i;
+	    for(i = BigInteger.ONE;
+	    	i.compareTo(MOD.subtract(new BigInteger("2")))<=0;
+	    	i = i.add(BigInteger.ONE)) {
 	    	ans = ans.multiply(x).remainder(MOD);
 	    }
 	    return ans;
@@ -180,6 +184,11 @@ public class Ellipse {
 		return (alice.getX().compareTo(bob.getX())==0&&alice.getY().compareTo(bob.getY())==0);
 	}
 	
+	/**
+	 * 计算某个点在曲线上的坐标，如果不在曲线上则返回[-1, -1]；如果出现未知错误则返回[-2, -2]
+	 * @param x
+	 * @return [y1, y2]
+	 */
 	public ENode[] nodeCal(BigInteger x) {
 		System.out.println("��ʼ��x����"+x.toString()+"���");
 		BigInteger p = this.p.getValue();
@@ -210,32 +219,57 @@ public class Ellipse {
 		return result;
 	}
 	
-	/*
-	 * ��Ҫ�Ż���
+	/**
+	 * 这个函数用于获得某个曲线上面的所有点。不过应该没什么实用性。
+	 * @return 一个包含所有点的集合
 	 */
 	public ArrayList<ENode> getAllENodes(){
 		ArrayList<ENode> result = new ArrayList<ENode>();
 		for(BigInteger i = BigInteger.ZERO;i.compareTo(this.p.getValue())<0;i=i.add(BigInteger.ONE)) {
-			ENode[] res = this.nodeCal(i);
-			if(res!=null) {
-				for(ENode e:res) {
-					System.out.println(e.toString());
-					result.add(e);
-				}
+			BigInteger[] y = this.calY(i);
+			if(!y[0].equals(new BigInteger("-1"))) {
+				System.out.println(i.toString()+"  "+y[0].toString()+"; "+y[1].toString());
+				
 			}
+			
 		}
 		return result;
 	}
 	
-	
+	/**
+	 * 产生一个曲线的可选基点G
+	 * @return 基点G
+	 */
+	public ENode nodeGen() {
+		//尝试枚举G点x坐标，并计算n是否为质数
+		for(BigInteger i = BigInteger.ZERO;i.compareTo(this.p.getValue())<0;i=i.add(BigInteger.ONE)) {
+			BigInteger[] y = this.calY(i);
+			if(!y[0].equals(new BigInteger("-1"))) {
+				//System.out.println(i.toString()+"  "+y[0].toString()+"; "+y[1].toString());
+				ENode someNode = new ENode(i,y[0]);
+				ENode someNode1 = new ENode(i, y[1]);
+				if(this.nodeInitN(someNode).isProbablePrime(1)) {
+					return someNode;
+				}else if(this.nodeInitN(someNode1).isProbablePrime(1)) {
+					return someNode1;
+				}
+			}
+		}
+		ENode G = new ENode(0);
+		System.out.println("未能发现G点");
+		this.nodeInitN(G);
+		return G;
+	}
 	public static final void main(String args[]) {
-		Ellipse a = new Ellipse(new Prime(23),-3,1);
+		Ellipse a = new Ellipse(1,1,new Prime(23));
 		Ellipse b = new Ellipse();
 		ENode alice = new ENode(3,10);
-		BigInteger i = new BigInteger("0");
-		/*ArrayList<ENode> r =a.getAllENodes();
-		System.out.println(r);
-	
+		BigInteger i = new BigInteger("26684");
+		ENode g = b.nodeGen();
+		System.out.println(g.getX().toString()+", "+g.getY().toString()+" "+g.getN().toString());
+		//ArrayList<ENode> r =b.getAllENodes();
+		//System.out.println(r);
+		/*
 		//System.out.println(a.nodeCal(alice.getX())[1].toString());
 		//System.out.println("r:"+r.toString());
 		//a.nodeInitN(alice);

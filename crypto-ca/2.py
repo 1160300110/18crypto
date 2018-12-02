@@ -29,8 +29,8 @@ def GetMoSqrt(x,P):#求模平方根y*y=x mod p，已知x，p求y
             ret = quick_algorithm(x,(s+1)//2,P)
             return (ret,P-ret)
         elif (t>=2):
-            x_=quick_algorithm(x,P-2,P)
-            n=1
+            x_ = quick_algorithm(x,P-2,P)
+            n = 1
             while(IsHaveMoSqrt(n,P)==1):
                 n=n+1
             b=quick_algorithm(n,s,P)
@@ -38,12 +38,13 @@ def GetMoSqrt(x,P):#求模平方根y*y=x mod p，已知x，p求y
             ret = quick_algorithm(x,(s+1)//2,P)#t-1
             t_=0
             while(t-1>0):
-                if(quick_algorithm(x_*ret*ret,2**(t-2),P)==1):
-                    ret=ret
+                if(quick_algorithm(x_ * ret*ret,2**(t-2),P)==1):
+                    ret = ret
                 else:
                     ret=ret*(b**(2**t_))%P
                 t=t-1
                 t_=t_+1
+                print("t",t)
             return (ret, P-ret)
         else:
             return (-2,-2)
@@ -60,7 +61,7 @@ def mySqrt(x):
     return ret
 if __name__ == "__main__":
     if True:
-        nn = mySqrt(3)
+        nn = mySqrt(4)
         print(nn)
         x=0x79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798#私钥为1,对应的公钥x
         ret = Secp256k1GetYByX(x)#secp256k1，根据x求y

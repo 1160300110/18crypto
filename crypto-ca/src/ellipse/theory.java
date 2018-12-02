@@ -46,7 +46,7 @@ public class theory {
         return new BigInteger(String.valueOf(sArray));
     }
 	
-	public BigInteger quick_algorithm(BigInteger a, BigInteger b, BigInteger c) throws IllegalArgumentException{
+	public static BigInteger quick_algorithm(BigInteger a, BigInteger b, BigInteger c) throws IllegalArgumentException{
 		BigInteger result = BigInteger.ONE;
 		a = a.remainder(c);
 		if(b.compareTo(BigInteger.ZERO)<0) {
@@ -62,39 +62,71 @@ public class theory {
 		return result;
 	}
 	
-	public Boolean isHaveMoSqrt(BigInteger x, BigInteger P) {
+	public static Boolean isHaveMoSqrt(BigInteger x, BigInteger P) {
 		BigInteger r = P.subtract(BigInteger.ONE).divideAndRemainder(new BigInteger("2"))[0];
 		BigInteger ret = quick_algorithm(x, r,P);
 		return ret.compareTo(BigInteger.ONE)==0?true:false;
 	}
 	
-	public BigInteger[] GetMoSqrt(BigInteger x, BigInteger P) {
+	public static BigInteger[] GetMoSqrt(BigInteger x, BigInteger P) {
 		BigInteger two = new BigInteger("2");
 		BigInteger ret[] = new BigInteger[2];
 		if(isHaveMoSqrt(x, P)==true) {
-			BigInteger t = BigInteger.ZERO;
+			//BigInteger t = BigInteger.ZERO;
+			int t = 0;
 			BigInteger s = P.subtract(BigInteger.ONE);
 			while(s.mod(new BigInteger("2")).compareTo(BigInteger.ZERO)==0){
 				s = s.divideAndRemainder(two)[0];
-				t = t.add(BigInteger.ONE);
+				//t = t.add(BigInteger.ONE);
+				t = t + 1;
 			}
-			if(t.equals(BigInteger.ONE)) {
-				ret[0] = this.quick_algorithm(x, s.add(BigInteger.ONE).divideAndRemainder(two)[0], P);
+			//if(t.equals(BigInteger.ONE)) {
+			if(t==1) {
+				ret[0] = quick_algorithm(x, s.add(BigInteger.ONE).divideAndRemainder(two)[0], P);
 				ret[1] = P.subtract(ret[0]);
 				return ret;
-			}else if(t.compareTo(two)>=0) {
-				BigInteger x_=this.quick_algorithm(x, P.subtract(two), P);
+			//}else if(t.compareTo(two)>=0) {
+			}else if(t>=2) {
+				BigInteger x_=quick_algorithm(x, P.subtract(two), P);
 				BigInteger n = BigInteger.ONE;
-				while(this.isHaveMoSqrt(n, P)==true){
+				while(isHaveMoSqrt(n, P)==true){
 					n = n.add(BigInteger.ONE);
 				}
-				BigInteger b = this.quick_algorithm(n, s, P);
+				BigInteger b = quick_algorithm(n, s, P);
 				System.out.println(b.toString());
-				
+				ret[0] = quick_algorithm(x_, s.add(BigInteger.ONE).divideAndRemainder(two)[0], P);
+				int t_ = 0;
+				//while(t.subtract(BigInteger.ONE).compareTo(BigInteger.ZERO)>0) {
+				while(t-1>0) {
+					if(quick_algorithm(x_.multiply(ret[0]).multiply(ret[0]), two.pow(t-2), P).equals(BigInteger.ONE)) {
+						//do nothing
+					}else {
+						ret[0] = ret[0].multiply(b.pow(Integer.valueOf(two.pow(t_).toString()))).mod(P);
+					}
+					t = t-1;
+					t_ = t_ + 1; 
+				}
+				return ret;
+			}else {
+				BigInteger rr[] = new BigInteger[2];
+				rr[0] = new BigInteger("-2");
+				rr[1] = rr[0];
+				return rr;
 			}
+			
+		}else {
+			BigInteger rr[] = new BigInteger[2];
+			rr[0] = new BigInteger("-1");
+			rr[1] = rr[0];
+			return rr;
 		}
 	}
-	/*
+	
+	private static BigInteger[] calY(BigInteger x) {
+		BigInteger a = x.pow(3).add(x).add(BigInteger.ONE);
+		return GetMoSqrt(a, new BigInteger("23"));
+	}
+	
 	public static final void main(String args[]) {
 		BigInteger two = new BigInteger("2");
 		BigInteger result = new BigInteger("0");
@@ -103,10 +135,12 @@ public class theory {
 		re = pow(two,256);
 		result = sqrt(re);
 		re = pow(result,2);
+		BigInteger a[] = calY(new BigInteger("3"));
 		
-		System.out.println(pow(two,256).toString());
-		System.out.println(re.toString());
+		System.out.println(a[0].toString()+"  "+a[1].toString());
+		//System.out.println(pow(two,256).toString());
+		//System.out.println(re.toString());
 		
 	}
-	*/
+	
 }
