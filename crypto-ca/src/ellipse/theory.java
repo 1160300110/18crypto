@@ -1,4 +1,5 @@
 package ellipse;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Arrays;
 
@@ -11,6 +12,42 @@ public class theory {
 		}
 		//System.out.println(result.toString());
 		return result;
+	}
+	
+	public static BigInteger pow(BigInteger a, BigInteger times, BigInteger MOD) {
+		BigInteger result = new BigInteger("1");
+		char[] btimes = times.toString(2).toCharArray();
+		BigInteger[] ary = new BigInteger[btimes.length];
+		if(btimes.length==1)return a.pow(Integer.valueOf(times.toString()));
+		ary[btimes.length-2] = a;//初始的数值为a
+		ary[btimes.length-1] = a;
+		Boolean flag = true;
+		//Ȼ����ݶ���������ִ�мӷ�
+		//System.out.println("次数： "+btimes.length);
+		for(int i = 0;i<btimes.length;i++) {
+			if(btimes[i]=='1') {
+				//System.out.print("1");
+				if(flag==true) {//发现第一个1ֵ
+					flag=false;
+					for(int j = btimes.length -2;j>=0;j--) {//从数组倒数第二位开始
+						//System.out.println(ary[j+1].toString());
+						ary[j] = ary[j+1].multiply(ary[j+1]);
+						ary[j] = ary[j].mod(MOD);
+						//System.out.println("ary: "+ary[j].toString());
+					}
+				}
+				//System.out.print("111");
+				//result = result.multiply(ary[i]);
+			}else {
+				//System.out.print("0");
+			}
+		}
+		for(int i = 0;i<btimes.length;i++) {
+			if(btimes[i]=='1') {
+				result = result.multiply(ary[i]).mod(MOD);
+			}
+		}
+				return result;
 	}
 	
 	
@@ -131,13 +168,13 @@ public class theory {
 		BigInteger two = new BigInteger("2");
 		BigInteger result = new BigInteger("0");
 		BigInteger re = new BigInteger("340282366881324382213159967663442624512");
-		//result= result.add(pow(two,256)).subtract(pow(two,224)).add(pow(two,192)).add(pow(two,96)).subtract(BigInteger.ONE);
-		re = pow(two,256);
-		result = sqrt(re);
-		re = pow(result,2);
-		BigInteger a[] = calY(new BigInteger("3"));
-		
-		System.out.println(a[0].toString()+"  "+a[1].toString());
+		/*result= result.add(pow(two,256)).subtract(pow(two,32)).subtract(pow(two,9)).subtract(pow(two,8))
+				.subtract(pow(two,7)).subtract(pow(two,6)).subtract(pow(two,4)).subtract(BigInteger.ONE);
+		*/
+		result = pow(two,new BigInteger("10"),new BigInteger("9"));
+
+		System.out.println(result);
+		//System.out.println(pow(result,result));
 		//System.out.println(pow(two,256).toString());
 		//System.out.println(re.toString());
 		

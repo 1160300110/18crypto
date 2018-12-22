@@ -5,6 +5,7 @@ public final class ENode {
 	private BigInteger x;
 	private BigInteger y;
 	private BigInteger n;
+	public int buffer = 0;
 	public ENode() {
 		
 	}
@@ -41,6 +42,7 @@ public final class ENode {
 	}
 	@Override
 	public String toString() {
+		if(this.x==null)return "零元";
 		return "("+this.getX().toString()+", "+this.getY().toString()+", "+this.getN().toString()+")";
 	}
 }

@@ -1,7 +1,12 @@
 eclipse.preferences.version=1
+encoding//src/ellipse=UTF-8
 encoding//src/ellipse/ENode.java=UTF-8
 encoding//src/ellipse/Ellipse.java=UTF-8
 encoding//src/ellipse/theory.java=UTF-8
+encoding//src/enc=UTF-8
 encoding//src/enc/Encypt.java=UTF-8
+encoding//src/enc/SHA1.java=UTF-8
 encoding//src/enc/crypto.java=UTF-8
+encoding//src/interf=UTF-8
 encoding//src/interf/CA.java=UTF-8
+encoding/<project>=UTF-8
