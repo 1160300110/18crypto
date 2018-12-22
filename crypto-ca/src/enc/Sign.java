@@ -1,8 +1,10 @@
 package enc;
 import java.math.BigInteger;
 import java.util.Random;
-import enc.SHA256;
-import ellipse.*;
+
+import ellipse.Crypto;
+import ellipse.ENode;
+import ellipse.Ellipse;
 
 public class Sign {
 	private Ellipse E;
@@ -89,7 +91,7 @@ public class Sign {
 		Sign ss = Sign.eccSign(m1, cp);
 		System.out.println(s.toString());
 		System.out.println();
-		Boolean r = s.eccDesg(m, cp);
+		Boolean r = s.eccDesg(m, cp1);
 		System.out.println(r.toString());
 		//System.out.println(r.getX().mod(s.cp.E.getP()));
 	}
